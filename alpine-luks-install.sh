@@ -158,6 +158,7 @@ setup_initial() {
   setup-interfaces
   rc-service networking start
   passwd
+  setup-sshd
   setup-timezone
   rc-update add networking boot
   rc-update add urandom boot
