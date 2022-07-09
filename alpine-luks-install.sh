@@ -280,6 +280,7 @@ mkinitfs -c /mnt/etc/mkinitfs/mkinitfs.conf -b /mnt/ $(ls /mnt/lib/modules)
 
 if [ -n "$(is_efi)" ]; then
   dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
+  chmod 600 /mnt/crypto_keyfile.bin
   printf "$ENCPWD" | cryptsetup luksAddKey $LUKS_PART /mnt/crypto_keyfile.bin -d -
 
   mount -t proc /proc /mnt/proc
