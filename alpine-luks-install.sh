@@ -224,7 +224,6 @@ setup-udev
 ask_disk
 DISK=$_resp
 
-
 # Partition disks
 [ -n "$(is_efi)" ] && setup_gpt_part $DISK || setup_dos_part $DISK
 
@@ -301,7 +300,7 @@ if [ -n "$(is_efi)" ]; then
 EOF
 # ^ This is somewhat ugly but it was the only way, since I use space indentation
 else
-  apk add syslinux
+  apk add --quiet syslinux
   sed -i 's/cryptdm=root/cryptdm=lvmcrypt/' /mnt/etc/update-extlinux.conf
   
   chroot /mnt/ /bin/sh -x <<-EOF 
