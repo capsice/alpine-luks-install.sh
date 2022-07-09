@@ -39,39 +39,38 @@ get_disk_id() {
       break
     fi
   done
- 
-  printf "%s\n" $diskpath
 
+  printf "%s\n" $diskpath
   unset disk 
 }
 
 
 # Returns the /dev/xxx path of a partition $1 on a disk $2
 get_partition() {
-  partition=$(
+  local partition=$(
     realpath /dev/disk/by-id/$(readlink "$2-part$1")
   )
-
+  
   [ -b "$partition" ] && printf "%s\n" $partition
 }
 
 # Lists all disks (I'm sure there's a better way to do this)
 all_disks() {
-  local _disks=""
+  local disks=""
 
   for disk in /dev/disk/by-id/*; do
     [ -z "${disk##*-part[0-9]}" ] && continue;
 
     local diskname=$(by_id_to_diskname $disk)
 
-    if [ -z "$_disks" ]; then
-      _disks="$diskname"
+    if [ -z "$disks" ]; then
+      disks="$diskname"
     else
-      _disks="$_disks $diskname"
+      disks="$disks $diskname"
     fi
   done
 
-  printf "$_disks\n"
+  printf "$disks\n"
 }
 
 ###############################################################################
@@ -103,7 +102,7 @@ ask_pass_twice() {
     [ "$_resp" == "$_password" ] && break
     eecho "passwords do not match, try again"
   done
-  IFS=$_oifs
+  IFS=$_OIFS
 }
 
 # Ask the user to select a disk
