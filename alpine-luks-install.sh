@@ -133,8 +133,6 @@ is_efi() {
 setup_hosts() {
   local tail="localhost localhost.localdomain"
 
-  local DOMAIN=$(hostname)
-
   [ "$(hostname)" != "localhost" ] && \
     echo "127.0.0.1 $(hostname) $tail\n::1 $(hostname) $tail" > /etc/hosts
 }
