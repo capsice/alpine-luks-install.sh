@@ -4,6 +4,16 @@ Una herramienta simple para instalar Alpine Linux con cifrado de disco completo 
 
 Este script está basado en el siguiente artículo: https://wiki.alpinelinux.org/wiki/LVM_on_LUKS, e implementa varias funciones de https://gitlab.alpinelinux.org/alpine/alpine-conf/-/blob/master/libalpine.sh.in
 
+```
+uso: alpine-luks-install.sh [-hs]
+
+Instala Alpine Linux Con Cifrado De Disco Completo
+
+opciones:
+        -h  Mostrar este mensaje
+        -s  Saltar la configuración inicial 
+```
+
 Depende en los siguientes programas:
 
 * udev
