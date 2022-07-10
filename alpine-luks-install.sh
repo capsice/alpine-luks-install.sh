@@ -153,7 +153,7 @@ normalize() {
 setup_initial() {
   setup-keymap
   setup-hostname
-  setup-hosts
+  setup_hosts # The imposter is amogus
   setup-interfaces
   rc-service networking start
   passwd
