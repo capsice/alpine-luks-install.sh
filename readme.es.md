@@ -23,11 +23,11 @@ Depende en los siguientes programas:
 * parted
 * mkinitfs
 
-Más los siguientes si tu dispositivo es compatible con UEFI:
+Más los siguientes si tu sistema es compatible con UEFI:
 
 * dosfstools
 * grub 
 * grub-efi 
 * efibootmgr
 
-Este script solo ha sido testeado para x86_64-efi. Puede que no funcione para otros dispositivos con distintas arquitecturas.
+Este script solo ha sido testeado para x86_64-efi. Puede que no funcione para otros sistemas con distintas arquitecturas.
