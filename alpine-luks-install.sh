@@ -200,7 +200,7 @@ setup_gpt_volumes() {
 # Main logic
 ###############################################################################
 
-while getopts "hso" opt ; do
+while getopts "hs" opt ; do
   case $opt in 
     h) usage 0;;
     s) SKIP_INITIAL_SETUP=1;;
@@ -214,8 +214,14 @@ trap normalize 1 2 3 6
   setup_initial
 
 # Install required packages
-apk add --quiet udev lvm2 cryptsetup e2fsprogs parted mkinitfs 2> /dev/null || \
-  die "failed to install dependencies"
+apk add --quiet \ 
+  udev \
+  lvm2 \
+  cryptsetup \
+  e2fsprogs \ 
+  parted \
+  mkinitfs \
+  2> /dev/null || die "failed to install dependencies"
   
 setup-udev
 
@@ -225,20 +231,23 @@ DISK=$_resp
 # Partition disks
 [ -n "$(is_efi)" ] && setup_gpt_part $DISK || setup_dos_part $DISK
 
+# Disk encryption
 BOOT_PART=$(get_partition 1 $DISK)
 LUKS_PART=$(get_partition 2 $DISK)
 
 ask_pass_twice "encryption password?"
 ENCPWD=$_resp
 
-printf "$ENCPWD" | cryptsetup -v -c serpent-xts-plain64 -s 512 --hash whirlpool \
-  --iter-time 5000 --use-random luksFormat --type luks1 $LUKS_PART -d -
+printf "$ENCPWD" | cryptsetup -v -c serpent-xts-plain64 -s 512 \
+  --hash whirlpool --iter-time 5000 --use-random luksFormat \
+  --type luks1 $LUKS_PART -d -
 
 printf "$ENCPWD" | cryptsetup luksOpen $LUKS_PART lvmcrypt -d -
 
 pvcreate /dev/mapper/lvmcrypt
 vgcreate vg0 /dev/mapper/lvmcrypt
 
+# Set up and mount volumes
 if [ -n "$(is_efi)" ]; then 
   setup_gpt_volumes vg0
 
@@ -267,10 +276,14 @@ else
   swapon /dev/vg0/swap
 fi
 
+# Usually complains about GRUB not being installed.
+# this is not a problem however since the installation of GRUB comes later
 setup-disk -m sys /mnt/ 2> /dev/null 
 
+# Add swap to fstab since it's not added automatically
 echo "/dev/vg0/swap swap swap defaults 0 0" >> /etc/fstab
 
+# mkinitfs.conf is already populated by setup-disk. We must only add cryptkey
 sed -i 's/cryptsetup/cryptsetup cryptkey/' /mnt/etc/mkinitfs/mkinitfs.conf
 
 mkinitfs -c /mnt/etc/mkinitfs/mkinitfs.conf -b /mnt/ $(ls /mnt/lib/modules)
@@ -278,7 +291,8 @@ mkinitfs -c /mnt/etc/mkinitfs/mkinitfs.conf -b /mnt/ $(ls /mnt/lib/modules)
 if [ -n "$(is_efi)" ]; then
   dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
   chmod 600 /mnt/crypto_keyfile.bin
-  printf "$ENCPWD" | cryptsetup luksAddKey $LUKS_PART /mnt/crypto_keyfile.bin -d -
+  printf "$ENCPWD" | cryptsetup luksAddKey $LUKS_PART \ 
+    /mnt/crypto_keyfile.bin -d -
 
   mount -t proc /proc /mnt/proc
   mount --rbind /dev /mnt/dev
@@ -292,11 +306,11 @@ if [ -n "$(is_efi)" ]; then
     echo "GRUB_PRELOAD_MODULES=\"luks cryptodisk part_gpt lvm\"" \
       >> /etc/default/grub
     echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
-
     grub-install --target=$(arch)-efi --efi-directory=/boot/efi
     grub-mkconfig -o /boot/grub/grub.cfg
 EOF
-# ^ This is somewhat ugly but it was the only way, since I use space indentation
+# ^ This is somewhat ugly but it was the only way, since I use 
+#   space indentation
 else
   apk add --quiet syslinux
   sed -i 's/cryptdm=root/cryptdm=lvmcrypt/' /mnt/etc/update-extlinux.conf
