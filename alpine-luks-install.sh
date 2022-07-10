@@ -276,7 +276,7 @@ fi
 setup-disk -m sys /mnt/ 2> /dev/null 
 
 # Add swap to fstab since it's not added automatically
-echo "/dev/vg0/swap swap swap defaults 0 0" >> /etc/fstab
+echo "/dev/vg0/swap swap swap defaults 0 0" >> /mnt/etc/fstab
 
 # mkinitfs.conf is already populated by setup-disk. We must only add cryptkey
 sed -i 's/cryptsetup/cryptsetup cryptkey/' /mnt/etc/mkinitfs/mkinitfs.conf
