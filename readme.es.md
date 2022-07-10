@@ -11,7 +11,7 @@ Instala Alpine Linux Con Cifrado De Disco Completo
 
 opciones:
         -h  Mostrar este mensaje
-        -s  Saltar la configuración inicial 
+        -s  Saltarse la configuración inicial 
 ```
 
 Depende de los siguientes programas:
