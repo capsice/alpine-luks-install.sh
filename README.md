@@ -4,6 +4,9 @@ A simple tool to install Alpine Linux with Full Disk Encryption (apart from the 
 
 This script was based on the following article: https://wiki.alpinelinux.org/wiki/LVM_on_LUKS, and implements multiple functions from https://gitlab.alpinelinux.org/alpine/alpine-conf/-/blob/master/libalpine.sh.in
 
+
+## Usage
+
 ```
 usage: alpine-luks-install.sh [-hs]
 
@@ -14,7 +17,9 @@ options:
         -s  Skip initial setup      
 ```
 
-It depends on the following packages:
+## Dependencies
+
+alpine-luks-install depends on the following packages:
 
 * eudev
 * lvm2
@@ -29,5 +34,9 @@ Plus the following if your system supports UEFI:
 * grub 
 * grub-efi 
 * efibootmgr
+
+These are all automatically installed.
+
+## Warning
 
 This script has only been tested on x86_64-efi. It might not work on other devices with different architectures.
