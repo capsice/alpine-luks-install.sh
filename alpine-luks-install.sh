@@ -215,13 +215,7 @@ trap normalize 1 2 3 6
   setup_initial
 
 # Install required packages
-apk add --quiet \ 
-  udev \
-  lvm2 \
-  cryptsetup \
-  e2fsprogs \ 
-  parted \
-  mkinitfs \
+apk add --quiet udev lvm2 cryptsetup e2fsprogs parted mkinitfs \
   2> /dev/null || die "failed to install dependencies"
   
 setup-udev
