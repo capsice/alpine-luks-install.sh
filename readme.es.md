@@ -14,7 +14,7 @@ opciones:
         -s  Saltar la configuración inicial 
 ```
 
-Depende en los siguientes programas:
+Depende de los siguientes programas:
 
 * udev
 * lvm2
