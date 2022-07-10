@@ -16,7 +16,7 @@ options:
 
 It depends on the following packages:
 
-* udev
+* eudev
 * lvm2
 * cryptsetup
 * e2fsprogs

@@ -215,7 +215,7 @@ trap normalize 1 2 3 6
   setup_initial
 
 # Install required packages
-apk add --quiet udev lvm2 cryptsetup e2fsprogs parted mkinitfs \
+apk add --quiet eudev lvm2 cryptsetup e2fsprogs parted mkinitfs \
   2> /dev/null || die "failed to install dependencies"
   
 setup-udev
@@ -284,11 +284,11 @@ sed -i 's/cryptsetup/cryptsetup cryptkey/' /mnt/etc/mkinitfs/mkinitfs.conf
 mkinitfs -c /mnt/etc/mkinitfs/mkinitfs.conf -b /mnt/ $(ls /mnt/lib/modules)
 
 if [ -n "$(is_efi)" ]; then
-  dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
+  touch /mnt/crypto_keyfile.bin
   chmod 600 /mnt/crypto_keyfile.bin
+  dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
 
-  printf "$ENCPWD" | cryptsetup luksAddKey $LUKS_PART \ 
-    /mnt/crypto_keyfile.bin -d -
+  printf "$ENCPWD" | cryptsetup luksAddKey $LUKS_PART /mnt/crypto_keyfile.bin -d -
 
   mount -t proc /proc /mnt/proc
   mount --rbind /dev /mnt/dev

@@ -16,7 +16,7 @@ opciones:
 
 Depende de los siguientes programas:
 
-* udev
+* eudev
 * lvm2
 * cryptsetup
 * e2fsprogs
