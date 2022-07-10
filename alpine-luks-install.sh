@@ -21,10 +21,10 @@ die() {
 }
 
 ###############################################################################
-# Disk functions
+# Disk functions (very very dependent on udev)
 ###############################################################################
 
-# Get a disk name from its by-id path
+# Get a disk name from its by-id path ($1)
 by_id_to_diskname() {
   local resolved_path=$(readlink $1)
   printf "${resolved_path##*/}\n"
@@ -40,12 +40,12 @@ get_disk_id() {
     fi
   done
 
+  unset disk
   printf "%s\n" $diskpath
-  unset disk 
 }
 
 
-# Returns the /dev/xxx path of a partition $1 on a disk $2
+# Returns the /dev/xxx path of a partition number ($1) on a disk ($2)
 get_partition() {
   local partition=$(
     realpath /dev/disk/by-id/$(readlink "$2-part$1")
@@ -291,6 +291,7 @@ mkinitfs -c /mnt/etc/mkinitfs/mkinitfs.conf -b /mnt/ $(ls /mnt/lib/modules)
 if [ -n "$(is_efi)" ]; then
   dd bs=512 count=4 if=/dev/urandom of=/mnt/crypto_keyfile.bin
   chmod 600 /mnt/crypto_keyfile.bin
+  
   printf "$ENCPWD" | cryptsetup luksAddKey $LUKS_PART \ 
     /mnt/crypto_keyfile.bin -d -
 
