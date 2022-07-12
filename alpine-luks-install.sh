@@ -302,7 +302,7 @@ if [ -n "$(is_efi)" ]; then
     echo "GRUB_PRELOAD_MODULES=\"luks cryptodisk part_gpt lvm\"" \
       >> /etc/default/grub
     echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
-    grub-install --target=$(arch)-efi --efi-directory=/boot/efi
+    grub-install --target=$(uname -m)-efi --efi-directory=/boot/efi
     grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 # ^ This is somewhat ugly but it was the only way, since I use 
